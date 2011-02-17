@@ -4,11 +4,17 @@
 ------------------------------------------
  Version 0.1 - Reference Implementation
 ------------------------------------------
-
 .. contents::
 
 Project Overview
 =================
+
+.. note:: This document is available in multiple formats. Some may be better
+          formatted than others. If your copy appears distorted, please obtain
+          either of these versions:
+
+            * PDF Document: whitepaper.pdf_
+            * HTML Document: whitepaper.html_
 
 Knifa's Pong is an open source, partial EJSCS scene container server 
 implementation that combines the functionality of a full SOA and EDA
@@ -21,6 +27,8 @@ enterprise ready framework for fully leveraging none, some or all of JSR 287.
           (currently in 'public review' phase) is finalized.
           
 .. _JSR 292: http://jcp.org/en/jsr/detail?id=292
+.. _whitepaper.pdf: http://github.com/mrdaemon/Pong/raw/master/doc/whitepaper.pdf
+.. _whitepaper.html: http://github.com/mrdaemon/Pong/raw/master/doc/whitepaper.html
 
 Overview of EJSCS Features, planned and implemented
 -----------------------------------------------------
@@ -31,7 +39,7 @@ Overview of EJSCS Features, planned and implemented
 
 * Stateful and Stateless CMP (Container Managed Paddle) entity operation
 
-* Support for programmaticalm source level access to exposed EJB and JMX-based
+* Support for programmatical, source level access to exposed EJB and JMX-based
   Web Services
 
 * Ability to expose specific compilation units and source code to `JSR 199`_
@@ -46,6 +54,7 @@ Overview of EJSCS Features, planned and implemented
 
 Application Overview
 ----------------------
+
 The EJSCS container provided operates under the following model::
 
      .--------------.        ********************************
@@ -91,6 +100,7 @@ In fact, the Pong EJSCS is a full
 `Enterprise Java Sphere Caroming System Container`.
 
 .. sidebar:: About EJSC(S):
+            
                `The Enterprise Java Sphere Caroming` specification
                defines an API and interface that is specifically
                designed to generate Java Enterprise-ready Entertainement
@@ -127,6 +137,9 @@ Why? Mostly because:
 2) I was bored and frustrated
 3) It needed to be made Enterprise Ready.
 4) I really enjoy writing reStructuredText documents.
+
+So yeah, it's all in good fun, and really isn't anything more than a shitty
+Pong clone in Java.
 
 .. _Alexandre Gauthier: http://www.raptorized.com/
  
