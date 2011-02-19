@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="glasnost" module="Pong" />
+    <configurations>
+        <conf name="common" visibility="private" description="used for common build tasks" />
+        <conf name="compile" description="used for building this project" />
+        <conf name="test" extends="compile" description="used for testing this project" />
+        <conf name="runtime" description="used for running this project" />
+        <conf name="master" description="used for publishing artifacts" />
+        <conf name="default" extends="master, runtime" />
+    </configurations>
+    <publications>
+        <artifact conf="master" name="Pong" type="jar" ext="jar"/>
+    </publications>
+    <dependencies>
+        <dependency org="ant-contrib" name="ant-contrib" rev="1.0b3"
+			conf="common->compile" />
+	<dependency org="lwjgl" name="lwjgl" rev="2.6"
+			conf="common->compile;runtime->default"/>
+    </dependencies>
+</ivy-module>

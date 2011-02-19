@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<project default="all" name="Pong EJSCS Container" basedir="."
+    xmlns:ivy="antlib:org.apache.ivy.ant" xmlns="antlib:org.apache.tools.ant">
+
+
+    <!-- =========================================================
+        *-*    Tweakable Knobs and common properties          *-*
+        ========================================================== -->
+
+    <!-- Default paths -->
+    <property name="sourcedir" location="src"/>
+    <property name="builddir" location="build"/>
+    <property name="distdir" location="dist"/>
+    <property name="docdir" location="doc"/>
+
+
+
+    <target name="all" depends="dist">
+        <description>
+            Do (almost) everything.
+        </description>
+        <echo message="Building pretty much everything."/>
+    </target>
+
+
+    <!-- =========================================================
+        *-*             Main, global targets                  *-*
+
+        The targets that follow are fairly generic in nature, and 
+        represent the flow of the build. These are the ones the
+        end user is going to be interested about.
+        ========================================================== -->
+
+    <target name="init">
+        <description>
+            Initial build configuration and pre-requisites.
+            Creates directories, etc.
+        </description>
+        <tstamp/> <!-- get timestamp -->
+        <mkdir dir="${builddir}"/>
+        <mkdir dir="${distdir}"/>
+        <mkdir dir="${docdir}/javadoc"/>
+    </target>
+
+    <target name="resolve" depends="init-ivy">
+        <description>
+            Resolve, download, cache and setup dependencies.
+        </description>
+        <ivy:retrieve/>
+    </target>
+
+    <target name="compile" depends="init, resolve">
+        <description>
+            Invoke the compiler and compile the sources to jvm
+            bytecode, storing output in the build directory.
+        </description>
+        <javac srcdir="${sourcedir}" destdir="${builddir}" />
+    </target>
+
+    <target name="docs" depends="init">
+        <description>
+            Generate the documentation for the project and render
+            the whitepapers from the readme (reStructuredText)
+        </description>
+    </target> 
+
+    <target name="dist" depends="compile">
+        <description>
+            Copy binaries, ressources and relevant output files
+            and package them in a jar and/or other archives,
+            for distribution.
+        </description>
+        <jar destfile="${distdir}/pong-${DSTAMP}.jar" basedir="${builddir}">
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="pong.Game"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="clean">
+        <description>
+            Clean out all the generated files (bytecode, dist
+            files, etc.
+        </description>
+        <delete dir="${builddir}"/>
+        <delete dir="${distdir}"/>
+    </target>
+
+
+
+    <!-- =========================================================
+        *-*         Apache Ivy Specific Targets                 *-*
+
+        These take care of bootstrapping Apache Ivy, caching the
+        jar in a local cache if it isn't available locally, and
+        then goes on to resolve all the dependencies for the
+        project.
+        ========================================================== -->
+
+    <target name="-set-ivy-properties">
+        <description>
+            (PRIVATE)
+            Setup the properties required for apache ivy, from env
+            or local directory cache.
+        </description>
+
+        <!-- Apache Ivy settings -->
+        <property name="ivy.install.version" value="2.2.0"/>
+
+        <!-- If The environment variable "IVY_HOME" exists, use it to provide 
+             the value for 'ivy.home'. Properties being immutable, whoever 
+             sets it first sets the value for the entire build. -->
+        <condition property="ivy.home" value="${env.IVY_HOME}">
+            <isset property="env.IVY_HOME"/>
+        </condition>
+
+        <!-- If there is no system IVY_HOME, just cache our own version. -->
+        <property name="ivy.home" value="${basedir}/.ivy"/>
+
+        <!-- Set the classpath and file paths properly --> 
+        <property name="ivy.jar.dir" value="${ivy.home}/lib"/>
+        <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
+    </target>
+
+
+    <target name="bootstrap-ivy" depends="-set-ivy-properties"
+            unless="skip-download">
+        <description>
+            Download and caches a copy of the ivy jar from the maven
+            repository. Define -Dskip-download=1 to bypass.
+        </description>
+        
+        <echo message="===== *-* Bootstrapping Apache Ivy *-* ====="/>
+
+        <!-- Create required cache folder structure -->
+        <mkdir dir="${ivy.jar.dir}"/>
+        
+        <!-- Download Ivy from maven repository, rather obnoxiously. -->
+        <get 
+            src="https://repository.sonatype.org/content/repositories/central/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+            dest="${ivy.jar.file}" usetimestamp="true"/>
+    </target>
+   
+
+    <target name="init-ivy" depends="bootstrap-ivy">
+        <description>
+            Read the Apache Ivy settings and download the
+            required libraries for the project as jar files.
+            Will use either cached local version, IVY_HOME 
+            version, or jar in ant's lib/ directory.
+        </description>
+
+        <!-- Populate path Task with any jar file that fits -->
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+        </path>
+
+        <!-- Apache Ivy Task Definition, with classpath -->
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+            uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+    </target>
+
+</project>
+
