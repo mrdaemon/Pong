@@ -5,14 +5,20 @@ import org.lwjgl.opengl.Display;
 
 import org.lwjgl.opengl.*;
 
+import org.lwjgl.input.*;
+
+import java.util.ArrayList;
 
 public class Game {
 	// Display dimensions.
-	public int width = 800;
-	public int height = 600;
+	public static int width = 800;
+	public static int height = 600;
+	
+	// Entity list.
+	private ArrayList<Entity> entities;
 	
 	// True if the game loop should be running, false otherwise.
-	public boolean isRunning = false;
+	private boolean isRunning = false;
 	
 	/**
 	 * Program entry point.
@@ -37,10 +43,10 @@ public class Game {
 			// Grab a list of display modes with our specified width and height
 			// as the minimum and maximum requirement.
 			DisplayMode[] dm = org.lwjgl.util.Display.getAvailableDisplayModes(
-					this.width,
-					this.height,
-					this.width,
-					this.height,
+					Game.width,
+					Game.height,
+					Game.width,
+					Game.height,
 					-1, -1, -1, -1);
 			
 			// Assume the first one is correct.
@@ -60,15 +66,33 @@ public class Game {
 		
 		// Give us an orthogonal display, setting the coordinates to match
 		// the screen size rather than this -1.0 to 1.0 business.
-		GL11.glOrtho(0, this.width, this.height, 0, -1, 1);
+		GL11.glOrtho(0, Game.width, Game.height, 0, -1, 1);
 		
 		// Switch to the model view (as in what we're drawing) and reset it.
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		GL11.glLoadIdentity();
 		
+		// Make a new entity list.
+		this.entities = new ArrayList<Entity>();
+		
+		// Make a keyboard business fuck.
+		try {
+			Keyboard.create();
+		} catch (Exception e) {
+			// Shit.
+			System.out.println("Unable to create keyboard controller.");
+			return false;
+		}
+		
+		// Balls and shit!
+		this.entities.add(new Ball());
+		this.entities.add(new PlayerPaddle());
+		this.entities.add(new ComputerPaddle(true));
+		
 		// The game is now probably running!
 		this.isRunning = true;
-		
+	
+		// Everything went OK!
 		return true;
 	}
 	
@@ -83,6 +107,15 @@ public class Game {
 			if (Display.isCloseRequested())
 				this.isRunning = false;
 			
+			// Poll the keyboard.
+			Keyboard.poll();
+			
+			// Loop through the entities and update and draw.
+			for (Entity e : this.entities) {
+				e.update(this);
+				e.draw(this);
+			}
+			
 			// Flip the display and clear the next frame for drawing.
 			Display.update();
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
@@ -91,4 +124,10 @@ public class Game {
 			Utils.wait(16);
 		}
 	}
+	
+	/**
+	 * Getter for the entity class.
+	 * @return ArrayList of entities.
+	 */
+	public ArrayList<Entity> getEntities() { return this.entities; }
 }
