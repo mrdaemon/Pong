@@ -13,7 +13,7 @@ repositories.remote << 'http://adterrasperaspera.com/lwjgl'
 LWJGL_VERSION = '2.7.1'
 
 LWJGL = group('lwjgl', 'lwjgl-util', 'lwjgl-native',
-  :under => 'org.lwjgl', :version =>'2.7.1')
+  :under => 'org.lwjgl', :version =>'#{LWJGL_VERSION}')
 
 # Jar manifest
 
@@ -22,8 +22,7 @@ desc 'EJSCS Pong Server Container Reference Implementation'
 define 'ESCSPong' do
   project.version = '0.1.0'
   compile.with transitive(LWJGL)
-  package(:jar).with :manifest => manifest.merge(
-			  'Main-Class' => 'pong.Game',
-  )
+  package(:jar).with :manifest => manifest.merge('Main-Class' => 'pong.Game')
 end
 
+# vim: set ft=ruby et ts=8 sw=2 sts=2: 
