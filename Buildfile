@@ -1,5 +1,12 @@
 # Apache Buildr build file
 # So incredibly requires buildr.
+# Contributed by Alexandre Gauthier <alex@lab.underwares.org>
+# https://github.com/mrdaemon/
+#
+# For the lazy or impatient:
+#   1) gem install buildr
+#   2) buildr package
+# Your jar should be sitting in 'target/'
 
 # Abusing maven repositories without the pom.xml
 # horror and the terribad delays :D
@@ -9,13 +16,9 @@ repositories.remote << 'http://mirrors.ibiblio.org/pub/mirrors/maven2/'
 repositories.remote << 'http://adterrasperaspera.com/lwjgl'
 
 # Dependencies
-# maven-style --> 'group.namespace:artifactid:version'
 LWJGL_VERSION = '2.7.1'
-
 LWJGL = group('lwjgl', 'lwjgl-util', 'lwjgl-native',
-  :under => 'org.lwjgl', :version =>'#{LWJGL_VERSION}')
-
-# Jar manifest
+  :under => 'org.lwjgl', :version => LWJGL_VERSION)
 
 # Project description
 desc 'EJSCS Pong Server Container Reference Implementation'
